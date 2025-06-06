@@ -1,6 +1,6 @@
-# Li.Fi Token Transfer Demo
+# Li.Fi Token Bridge Demo
 
-This project demonstrates how to use Li.Fi to transfer tokens across different blockchain networks using their API.
+This project demonstrates how to use Li.Fi to transfer tokens across different blockchain networks using their API. It includes functionality to view supported chains and execute cross-chain token transfers.
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ cd lifi-integration-demo
 
 2. Install dependencies:
 ```bash
-npm install
+npm install ethers@5.7.2 axios dotenv
 ```
 
 3. Create a `.env` file in the root directory with the following variables:
@@ -27,9 +27,12 @@ npm install
 # Your wallet's private key (DO NOT SHARE THIS!)
 PRIVATE_KEY=your_private_key_here
 
-# RPC URLs for different networks
-GOERLI_RPC_URL=https://goerli.infura.io/v3/your_infura_key
-MUMBAI_RPC_URL=https://polygon-mumbai.infura.io/v3/your_infura_key
+# Your wallet address
+WALLET_ADDRESS=your_wallet_address_here
+
+# RPC URLs for the networks
+RPC_URL_GNOSIS=https://rpc.gnosischain.com
+RPC_URL_POLYGON=https://polygon-rpc.com
 
 # Li.Fi API URL
 LIFI_API_URL=https://li.quest/v1
@@ -52,20 +55,27 @@ This will display:
 - Summary of mainnet and testnet chains
 - Available chain keys for use in transfers
 
-### 2. Token Transfers
+### 2. Token Bridge Example
 
-1. Update the configuration in `src/example.js` with your desired transfer parameters:
-   - `fromChain`: Source chain (e.g., 'GOR' for Goerli)
-   - `toChain`: Destination chain (e.g., 'MATIC' for Mumbai)
-   - `fromToken`: Source token symbol
-   - `toToken`: Destination token symbol
-   - `fromAmount`: Amount to transfer (in smallest unit, e.g., 1000000 for 1 USDC)
-   - `fromAddress`: Your wallet address
+The bridge example demonstrates how to transfer tokens between chains:
 
-2. Run the example:
 ```bash
-node src/example.js
+node src/bridge-example.js
 ```
+
+The example is configured to transfer 1 USDC from Gnosis Chain to Polygon. To modify the transfer:
+
+1. Open `src/bridge-example.js`
+2. Update the configuration in the `main()` function:
+```javascript
+const fromChain = 'DAI';  // Gnosis Chain
+const fromToken = 'USDC';
+const toChain = 'POL';    // Polygon
+const toToken = 'USDC';
+const fromAmount = '1000000'; // 1 USDC (6 decimals)
+```
+
+3. To execute the transfer, uncomment the transaction section in the code (around line 150-170).
 
 ## Features
 
@@ -74,12 +84,14 @@ node src/example.js
 - Automatic allowance management
 - Transaction status monitoring
 - Error handling and logging
+- Environment variable validation
+- Balance checking before transfers
 
 ## Supported Networks
 
 The implementation supports various networks including:
-- Goerli (Ethereum testnet)
-- Mumbai (Polygon testnet)
+- Gnosis Chain (DAI)
+- Polygon (POL)
 - And other networks supported by Li.Fi
 
 To see the complete list of supported networks, run:
@@ -92,6 +104,20 @@ node src/getChains.js
 - Never commit your `.env` file or share your private key
 - Always test with small amounts first
 - Use testnet for development and testing
+- The transaction execution is commented out by default for safety
+- Always verify transaction details before executing
+
+## Project Structure
+
+```
+lifi-integration-demo/
+├── src/
+│   ├── getChains.js      # View supported chains
+│   └── bridge-example.js # Token bridge implementation
+├── .env                  # Environment variables (not tracked by git)
+├── .gitignore           # Git ignore rules
+└── README.md            # This file
+```
 
 ## License
 
